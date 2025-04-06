@@ -1,10 +1,23 @@
-﻿<Window x:Class="NovaGaiaCharaktereditor.FähigkeitAuswahlDialog"
+﻿<Window x:Class="NovaGaiaCharaktereditor.HelpDialog.FähigkeitAuswahlDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Fähigkeit auswählen" Height="300" Width="400">
+        Title="Fähigkeiten auswählen" Height="450" Width="450" WindowStartupLocation="CenterOwner">
     <StackPanel Margin="10">
-        <TextBlock Text="Wähle eine Fähigkeit aus:" FontWeight="Bold" Margin="0,0,0,10" />
-        <ListBox x:Name="FähigkeitListBox" DisplayMemberPath="Name" Height="180" />
-        <Button Content="Hinzufügen" HorizontalAlignment="Center" Width="100" Margin="0,10,0,0" Click="BtnHinzufügen_Click" />
+        <TextBlock Text="Verfügbare Fähigkeiten" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+        <ListBox x:Name="lstFähigkeiten" SelectionMode="Extended" Height="300">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Margin="0,5,0,5">
+                        <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
+                        <TextBlock Text="{Binding Beschreibung}" TextWrapping="Wrap" FontSize="12"/>
+                        <TextBlock Text="{Binding ChiKosten, StringFormat='Chi-Kosten: {0}'}" FontSize="11" Foreground="Gray"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Content="OK" Click="Ok_Click" Width="75" Margin="5"/>
+            <Button Content="Abbrechen" Click="Abbrechen_Click" Width="75"/>
+        </StackPanel>
     </StackPanel>
 </Window>

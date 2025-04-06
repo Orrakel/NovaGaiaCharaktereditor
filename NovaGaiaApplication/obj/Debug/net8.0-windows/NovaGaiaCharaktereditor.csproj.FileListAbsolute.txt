@@ -25,3 +25,8 @@ C:\Users\niggi\source\repos\NovaGaiaApplication\NovaGaiaApplication\obj\Debug\ne
 C:\Users\niggi\source\repos\NovaGaiaApplication\NovaGaiaApplication\obj\Debug\net8.0-windows\NovaGaiaCharaktereditor.sourcelink.json
 C:\Users\niggi\source\repos\NovaGaiaApplication\NovaGaiaApplication\obj\Debug\net8.0-windows\HelpDialog\VolksboniAuswahlDialog.baml
 C:\Users\niggi\source\repos\NovaGaiaApplication\NovaGaiaApplication\obj\Debug\net8.0-windows\HelpDialog\VolksboniAuswahlDialog.g.cs
+C:\Users\niggi\source\repos\NovaGaiaApplication\NovaGaiaApplication\obj\Debug\net8.0-windows\NovaGaiaCharaktereditor.csproj.AssemblyReference.cache
+C:\Users\niggi\source\repos\NovaGaiaApplication\NovaGaiaApplication\bin\Debug\net8.0-windows\Newtonsoft.Json.dll
+C:\Users\niggi\source\repos\NovaGaiaApplication\NovaGaiaApplication\obj\Debug\net8.0-windows\NovaGaia.F82E58A2.Up2Date
+C:\Users\niggi\source\repos\NovaGaiaApplication\NovaGaiaApplication\obj\Debug\net8.0-windows\HelpDialog\FertigkeitenAuswahlDialog.baml
+C:\Users\niggi\source\repos\NovaGaiaApplication\NovaGaiaApplication\obj\Debug\net8.0-windows\HelpDialog\FertigkeitenAuswahlDialog.g.cs

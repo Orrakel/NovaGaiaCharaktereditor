@@ -4,7 +4,7 @@ using System.Windows;
 using NovaGaiaCharaktereditor.Data;
 using NovaGaiaCharaktereditor.Klassen;
 
-namespace NovaGaiaCharaktereditor.Dialoge
+namespace NovaGaiaCharaktereditor.HelpDialog
 {
     public partial class VolksboniAuswahlDialog : Window
     {

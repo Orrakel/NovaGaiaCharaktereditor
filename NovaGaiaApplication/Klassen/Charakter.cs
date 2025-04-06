@@ -22,6 +22,7 @@ namespace NovaGaiaCharaktereditor.Klassen
         public List<string> FesteVorteile { get; set; } = new();
         public List<string> FesteNachteile { get; set; } = new();
         public List<string> VolksBoni { get; set; } = new();
+        public List<string> Fertigkeiten { get; set; } = new();
 
 
         public int Leben

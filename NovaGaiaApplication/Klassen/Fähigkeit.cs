@@ -14,7 +14,7 @@ namespace NovaGaiaCharaktereditor.Klassen
 
         public override string ToString()
         {
-            return $"{Name} (Chi: {ChiKosten})";
+            return $"{Name} (Chi: {ChiKosten}) {Effekt}";
         }
     }
 }

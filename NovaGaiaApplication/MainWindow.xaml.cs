@@ -5,7 +5,9 @@ using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using NovaGaiaCharaktereditor.Dialoge;
+using Newtonsoft.Json;
+using NovaGaiaCharaktereditor.HelpDialog;
+
 
 
 namespace NovaGaiaCharaktereditor
@@ -18,7 +20,9 @@ namespace NovaGaiaCharaktereditor
         private int verfügbareAttributPunkte = 27;
         private readonly List<string> basisAttribute = new() { "STR", "GES", "INT", "WAH", "AUS", "WIL", "CHR" };
         private int maxBonusAuswahl = 0;
-        private List<BoniEintrag> aktiveVolksBoni = new();
+        private List<BoniEintrag> aktiveVolksBoni = new(); 
+        private List<Fähigkeit> aktiveFaehigkeiten = new(); 
+        private List<Fertigkeit> aktiveFertigkeiten = new();
 
         public MainWindow()
         {
@@ -38,56 +42,83 @@ namespace NovaGaiaCharaktereditor
 
         private void BtnSave_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(aktuellerCharakter.Name))
-                aktuellerCharakter.Name = txtName.Text.Trim();
+            var dialog = new Microsoft.Win32.SaveFileDialog
+            {
+                Filter = "JSON-Datei (*.json)|*.json",
+                DefaultExt = ".json"
+            };
 
-            aktuellerCharakter.Motivation = txtMotivation.Text.Trim();
-            _ = int.TryParse(txtLevel.Text, out int level);
-            aktuellerCharakter.Level = level;
+            if (dialog.ShowDialog() == true)
+            {
+                // Setze aktuelle Werte in den Charakter
+                aktuellerCharakter.Name = txtName.Text;
+                aktuellerCharakter.Motivation = txtMotivation.Text;
+                aktuellerCharakter.Klasse = cmbKlasse.SelectedItem?.ToString() ?? "";
+                aktuellerCharakter.Fähigkeiten = lstAusgewaehlteTechniken.Items
+                    .OfType<Fähigkeit>().ToList();
+                aktuellerCharakter.Vorteile = lstVorteile.Items.OfType<string>().ToList();
+                aktuellerCharakter.Nachteile = lstNachteile.Items.OfType<string>().ToList();
+                aktuellerCharakter.VolksBoni = aktiveVolksBoni.Select(b => b.Name).ToList();
 
-            if (int.TryParse(txtLebenAktuell.Text, out int lebenAktuell))
-                aktuellerCharakter.LebenAktuell = lebenAktuell;
+                // JSON speichern
+                var json = JsonConvert.SerializeObject(aktuellerCharakter, Newtonsoft.Json.Formatting.Indented);
+                File.WriteAllText(dialog.FileName, json);
 
-            if (int.TryParse(txtChiAktuell.Text, out int chiAktuell))
-                aktuellerCharakter.ChiAktuell = chiAktuell;
-
-            string path = Path.Combine(characterFolder, aktuellerCharakter.Name + ".json");
-            string json = JsonSerializer.Serialize(aktuellerCharakter, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(path, json);
-            MessageBox.Show("Charakter gespeichert.");
+                MessageBox.Show("Charakter erfolgreich gespeichert.");
+            }
         }
 
         private void BtnLoad_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new Microsoft.Win32.OpenFileDialog
             {
-                InitialDirectory = characterFolder,
-                Filter = "Charakterdateien (*.json)|*.json"
+                Filter = "JSON-Datei (*.json)|*.json",
+                DefaultExt = ".json"
             };
 
             if (dialog.ShowDialog() == true)
             {
-                try
-                {
-                    string json = File.ReadAllText(dialog.FileName);
-                    aktuellerCharakter = JsonSerializer.Deserialize<Charakter>(json);
+                var json = File.ReadAllText(dialog.FileName);
+                aktuellerCharakter = JsonConvert.DeserializeObject<Charakter>(json);
 
-                    if (aktuellerCharakter != null)
+                if (aktuellerCharakter == null)
+                {
+                    MessageBox.Show("Fehler beim Laden der Datei.");
+                    return;
+                }
+
+                // Oberfläche befüllen
+                txtName.Text = aktuellerCharakter.Name;
+                txtMotivation.Text = aktuellerCharakter.Motivation;
+                cmbVolk.SelectedItem = aktuellerCharakter.Volk?.Name;
+                cmbKlasse.SelectedItem = aktuellerCharakter.Klasse;
+
+                UpdateAttributAnzeige();
+                lstAusgewaehlteTechniken.ItemsSource = aktuellerCharakter.Fähigkeiten;
+                lstVorteile.ItemsSource = aktuellerCharakter.Vorteile;
+                lstNachteile.ItemsSource = aktuellerCharakter.Nachteile;
+
+                // Volksboni neu aufbauen
+                if (aktuellerCharakter.Volk != null)
+                {
+                    if (VolkDatabase.Voelker.TryGetValue(aktuellerCharakter.Volk.Name, out var geladenesVolk))
                     {
-                        txtName.Text = aktuellerCharakter.Name;
-                        txtMotivation.Text = aktuellerCharakter.Motivation;
-                        txtLevel.Text = aktuellerCharakter.Level.ToString();
-                        txtLebenAktuell.Text = aktuellerCharakter.LebenAktuell.ToString();
-                        txtChiAktuell.Text = aktuellerCharakter.ChiAktuell.ToString();
-                        RenderFaehigkeiten();
+                        aktuellerCharakter.Volk = geladenesVolk;
+                        maxBonusAuswahl = geladenesVolk.Boni?.MaxBoniauswahl ?? 3;
+
+                        LadeVolksBoni(geladenesVolk); // setzt Feste/Freie Boni
+                        aktiveVolksBoni = geladenesVolk.Boni.FreieBoni
+                            .Where(b => aktuellerCharakter.VolksBoni.Contains(b.Name))
+                            .ToList();
+
+                        RenderVolksboni();
                     }
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Fehler beim Laden: " + ex.Message);
-                }
+
+                MessageBox.Show("Charakter erfolgreich geladen.");
             }
         }
+
         private void cmbVolk_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (cmbVolk.SelectedItem is string selectedVolk &&
@@ -108,12 +139,13 @@ namespace NovaGaiaCharaktereditor
 
                 //// Leere Fähigkeiten-Listen
                 //lstAlleFähigkeiten.ItemsSource = KlassenFaehigkeiten.VerfuegbareFaehigkeiten.GetValueOrDefault(volk.Name, new());
-                //lstAusgewaehlteFaehigkeiten.ItemsSource = null;
+                //lstAusgewaehlteTechniken.ItemsSource = null;
             }
 
             lstVorteile.ItemsSource = new List<string>(aktuellerCharakter.Vorteile);
             lstNachteile.ItemsSource = new List<string>(aktuellerCharakter.Nachteile);
         }
+
         private void BtnAddVolksBoni_Click(object sender, RoutedEventArgs e)
         {
             if (aktuellerCharakter.Volk?.Boni == null) return;
@@ -130,7 +162,8 @@ namespace NovaGaiaCharaktereditor
                 return;
             }
 
-            var dialog = new VolksboniAuswahlDialog(verfügbare, max - aktiveVolksBoni.Count);
+            var dialog = new VolksboniAuswahlDialog(verfügbare, max);
+
             if (dialog.ShowDialog() == true && dialog.AusgewählteBoni.Any())
             {
                 aktiveVolksBoni.AddRange(dialog.AusgewählteBoni);
@@ -138,6 +171,7 @@ namespace NovaGaiaCharaktereditor
                 RenderVolksboni();
             }
         }
+
         private void RenderVolksboni()
         {
             lstAusgewaehlteVolksBoni.ItemsSource = null;
@@ -165,6 +199,44 @@ namespace NovaGaiaCharaktereditor
             }
         }
 
+        private void BtnAddFertigkeiten_Click(object sender, RoutedEventArgs e)
+        {
+            var maxFertigkeiten = 4; // ggf. klassenspezifisch setzen
+            var bereitsGewählt = aktiveFertigkeiten.Select(f => f.Name).ToHashSet();
+
+            var verfügbare = FertigkeitenDatenbank.Alle
+                .Where(f => !bereitsGewählt.Contains(f.Name))
+                .ToList();
+
+            var dialog = new NovaGaiaCharaktereditor.Dialoge.FertigkeitenAuswahlDialog(verfügbare, maxFertigkeiten);
+
+            if (dialog.ShowDialog() == true && dialog.AusgewaehlteFertigkeiten.Any())
+            {
+                aktiveFertigkeiten.AddRange(dialog.AusgewaehlteFertigkeiten);
+                aktuellerCharakter.Fertigkeiten = aktiveFertigkeiten.Select(f => f.Name).ToList();
+                RenderFertigkeiten();
+            }
+        }
+
+        private void BtnRemoveFertigkeiten_Click(object sender, RoutedEventArgs e)
+        {
+            if (lstAusgewaehlteFertigkeiten.SelectedItem is Fertigkeit ausgewählte)
+            {
+                aktiveFertigkeiten.Remove(ausgewählte);
+                aktuellerCharakter.Fertigkeiten = aktiveFertigkeiten.Select(f => f.Name).ToList();
+                RenderFertigkeiten();
+            }
+            else
+            {
+                MessageBox.Show("Bitte wähle eine Fertigkeit aus, die entfernt werden soll.");
+            }
+        }
+
+        private void RenderFertigkeiten()
+        {
+            lstAusgewaehlteFertigkeiten.ItemsSource = null;
+            lstAusgewaehlteFertigkeiten.ItemsSource = aktiveFertigkeiten;
+        }
 
         private void UpdateVolksbonusHinweis()
         {
@@ -202,74 +274,46 @@ namespace NovaGaiaCharaktereditor
             }
         }
 
-        private void BtnAddFaehigkeiten_Click(object sender, RoutedEventArgs e)
+        private void BtnAddTechnik_Click(object sender, RoutedEventArgs e)
         {
-            // Sicherstellen, dass eine Klasse ausgewählt ist
-            if (string.IsNullOrWhiteSpace(aktuellerCharakter?.Klasse) ||
-                !KlassenFaehigkeiten.VerfuegbareFaehigkeiten.TryGetValue(aktuellerCharakter.Klasse, out var faehigkeitenTuples))
+            if (cmbKlasse.SelectedItem == null || aktuellerCharakter.Volk == null)
             {
-                MessageBox.Show("Bitte wähle zuerst eine Klasse mit verfügbaren Fähigkeiten.");
+                MessageBox.Show("Bitte zuerst Volk und Klasse auswählen.");
                 return;
             }
 
-            // Bereits gewählte Fähigkeiten herausfiltern
-            var bereitsGewählt = aktuellerCharakter.Fähigkeiten.Select(f => f.Name).ToHashSet();
+            var klassenname = cmbKlasse.SelectedItem.ToString();
+            var tupelListe = KlassenFaehigkeiten.VerfuegbareFaehigkeiten
+                .GetValueOrDefault(klassenname, new());
 
-            // Konvertiere Tuple in Fähigkeit-Objekte und filtere bereits gewählte
-            var verfügbareFähigkeiten = faehigkeitenTuples
-                .Where(f => !bereitsGewählt.Contains(f.Name))
-                .Select(f => new Fähigkeit
+            var verfügbare = tupelListe
+                .Select(t => new Fähigkeit
                 {
-                    Name = f.Name,
-                    Effekt = f.Effekt,
-                    ChiKosten = f.ChiKosten
-                })
-                .ToList();
+                    Name = t.Name,
+                    Effekt = t.Effekt,
+                    ChiKosten = t.ChiKosten
+                }).ToList();
 
-            if (verfügbareFähigkeiten.Count == 0)
-            {
-                MessageBox.Show("Alle verfügbaren Fähigkeiten dieser Klasse wurden bereits hinzugefügt.");
-                return;
-            }
 
-            // Dialog aufrufen
-            var dialog = new FähigkeitAuswahlDialog(verfügbareFähigkeiten);
-            if (dialog.ShowDialog() == true && dialog.SelectedFähigkeit != null)
+            var bereitsGewählt = aktiveFaehigkeiten.Select(f => f.Name).ToHashSet();
+            var auswahl = verfügbare.Where(f => !bereitsGewählt.Contains(f.Name)).ToList();
+
+            var dialog = new FähigkeitAuswahlDialog(auswahl);
+
+            if (dialog.ShowDialog() == true && dialog.AusgewählteFähigkeiten.Any())
             {
-                aktuellerCharakter.Fähigkeiten.Add(dialog.SelectedFähigkeit);
+                aktiveFaehigkeiten.AddRange(dialog.AusgewählteFähigkeiten);
+                aktuellerCharakter.Fähigkeiten = new List<Fähigkeit>(aktiveFaehigkeiten);
                 RenderFaehigkeiten();
             }
         }
 
         private void RenderFaehigkeiten()
         {
-            if (FindName("faehigkeitenPanel") is not StackPanel panel || aktuellerCharakter?.Fähigkeiten == null)
-                return;
-
-            panel.Children.Clear();
-
-            foreach (var f in aktuellerCharakter.Fähigkeiten)
-            {
-                panel.Children.Add(new Label
-                {
-                    Content = $"Name: {f.Name}",
-                    FontWeight = FontWeights.Bold,
-                    FontSize = 14
-                });
-
-                panel.Children.Add(new Label
-                {
-                    Content = $"Effekt: {f.Effekt}",
-                    Margin = new Thickness(0, 0, 0, 2)
-                });
-
-                panel.Children.Add(new Label
-                {
-                    Content = $"Chi-Kosten: {f.ChiKosten}",
-                    Margin = new Thickness(0, 0, 0, 10)
-                });
-            }
+            lstAusgewaehlteTechniken.ItemsSource = null;
+            lstAusgewaehlteTechniken.ItemsSource = aktiveFaehigkeiten;
         }
+
 
         private void chkSpielmodus_Checked(object sender, RoutedEventArgs e)
         {
@@ -308,35 +352,20 @@ namespace NovaGaiaCharaktereditor
             BtnAddNachteil.IsEnabled = bearbeitbar;
             BtnRemoveVorteil.IsEnabled = bearbeitbar;
             BtnRemoveNachteil.IsEnabled = bearbeitbar;
-            BtnAddFaehigkeiten.IsEnabled = bearbeitbar;
-            BtnRemoveFaehigkeit.IsEnabled = bearbeitbar;
+            BtnAddTechnik.IsEnabled = bearbeitbar;
+            BtnRemoveTechnik.IsEnabled = bearbeitbar;
             BtnSave.IsEnabled = bearbeitbar;
 
             // Optional: auch andere Eingaben oder Custom-Funktionen sperren
         }
 
-        private void BtnRemoveFaehigkeit_Click(object sender, RoutedEventArgs e)
+        private void BtnRemoveTechnik_Click(object sender, RoutedEventArgs e)
         {
-            if (aktuellerCharakter.Fähigkeiten == null || aktuellerCharakter.Fähigkeiten.Count == 0)
+            if (lstAusgewaehlteTechniken.SelectedItem is Fähigkeit auswahl)
             {
-                MessageBox.Show("Es wurden noch keine Fähigkeiten ausgewählt.");
-                return;
-            }
-
-            // Dialog zur Auswahl der zu entfernenden Fähigkeit
-            FähigkeitAuswahlDialog dialog = new FähigkeitAuswahlDialog(aktuellerCharakter.Fähigkeiten);
-            dialog.Title = "Fähigkeit entfernen";
-
-            if (dialog.ShowDialog() == true && dialog.SelectedFähigkeit != null)
-            {
-                var zuEntfernen = aktuellerCharakter.Fähigkeiten
-                    .FirstOrDefault(f => f.Name == dialog.SelectedFähigkeit.Name);
-
-                if (zuEntfernen != null)
-                {
-                    aktuellerCharakter.Fähigkeiten.Remove(zuEntfernen);
-                    RenderFaehigkeiten();
-                }
+                aktiveFaehigkeiten.Remove(auswahl);
+                aktuellerCharakter.Fähigkeiten = new List<Fähigkeit>(aktiveFaehigkeiten);
+                RenderFaehigkeiten();
             }
         }
 

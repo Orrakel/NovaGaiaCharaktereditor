@@ -1,33 +1,31 @@
-﻿using NovaGaiaCharaktereditor.Klassen;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
+using NovaGaiaCharaktereditor.Klassen;
 
-namespace NovaGaiaCharaktereditor
+namespace NovaGaiaCharaktereditor.HelpDialog
 {
     public partial class FähigkeitAuswahlDialog : Window
     {
-        private List<Fähigkeit> verfügbareFähigkeiten;
-
-        public Fähigkeit SelectedFähigkeit { get; private set; }
+        public List<Fähigkeit> AusgewählteFähigkeiten { get; private set; } = new();
 
         public FähigkeitAuswahlDialog(List<Fähigkeit> verfügbareFähigkeiten)
         {
             InitializeComponent();
-            FähigkeitListBox.ItemsSource = verfügbareFähigkeiten;
-            this.verfügbareFähigkeiten = verfügbareFähigkeiten;
+            lstFähigkeiten.ItemsSource = verfügbareFähigkeiten;
         }
 
-        private void BtnHinzufügen_Click(object sender, RoutedEventArgs e)
+        private void Ok_Click(object sender, RoutedEventArgs e)
         {
-            if (FähigkeitListBox.SelectedItem is Fähigkeit f)
-            {
-                SelectedFähigkeit = f;
-                DialogResult = true;
-                Close();
-            }
-            else
-            {
-                MessageBox.Show("Bitte wähle eine Fähigkeit aus.");
-            }
+            AusgewählteFähigkeiten = lstFähigkeiten.SelectedItems.Cast<Fähigkeit>().ToList();
+            DialogResult = true;
+            Close();
+        }
+
+        private void Abbrechen_Click(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+            Close();
         }
     }
 }
