@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\niggi\\source\\repos\\NovaGaiaApplication\\NovaGaiaApplication\\NovaGaiaCharaktereditor.csproj": {}
+    "C:\\Users\\niggi\\Source\\Repos\\NovaGaiaCharaktereditor2\\NovaGaiaApplication\\NovaGaiaCharaktereditor.csproj": {}
   },
   "projects": {
-    "C:\\Users\\niggi\\source\\repos\\NovaGaiaApplication\\NovaGaiaApplication\\NovaGaiaCharaktereditor.csproj": {
+    "C:\\Users\\niggi\\Source\\Repos\\NovaGaiaCharaktereditor2\\NovaGaiaApplication\\NovaGaiaCharaktereditor.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\niggi\\source\\repos\\NovaGaiaApplication\\NovaGaiaApplication\\NovaGaiaCharaktereditor.csproj",
+        "projectUniqueName": "C:\\Users\\niggi\\Source\\Repos\\NovaGaiaCharaktereditor2\\NovaGaiaApplication\\NovaGaiaCharaktereditor.csproj",
         "projectName": "NovaGaiaCharaktereditor",
-        "projectPath": "C:\\Users\\niggi\\source\\repos\\NovaGaiaApplication\\NovaGaiaApplication\\NovaGaiaCharaktereditor.csproj",
+        "projectPath": "C:\\Users\\niggi\\Source\\Repos\\NovaGaiaCharaktereditor2\\NovaGaiaApplication\\NovaGaiaCharaktereditor.csproj",
         "packagesPath": "C:\\Users\\niggi\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\niggi\\source\\repos\\NovaGaiaApplication\\NovaGaiaApplication\\obj\\",
+        "outputPath": "C:\\Users\\niggi\\Source\\Repos\\NovaGaiaCharaktereditor2\\NovaGaiaApplication\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

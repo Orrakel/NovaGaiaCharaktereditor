@@ -1,11 +1,8 @@
 {
-  "F\u00E4higkeiten": [
-    "(Felsbr\u00FCcke, Erschaffe eine schmale Erderh\u00F6hung \u00FCber eine L\u00FCcke bis zu 6m., 2)"
-  ],
   "Name": "Test",
   "Volk": {
     "Name": "Novani",
-    "Beschreibung": "Streng gl\u00E4ubig, diszipliniert, Ursprung der Zivilisation.",
+    "Beschreibung": "Streng gläubig, diszipliniert, Ursprung der Zivilisation.",
     "Startattribute": {
       "STR": 8,
       "GES": 8,
@@ -15,6 +12,17 @@
       "WIL": 8,
       "CHR": 8
     },
+    "Vorteile": [
+      "Guter Anführer",
+      "Glaube als Stärke",
+      "Disziplinierte Ausbildung"
+    ],
+    "Nachteile": [
+      "Starrköpfig",
+      "Arroganz gegenüber anderen Völkern",
+      "Technologieverloren"
+    ],
+    "Standardausrüstung": [],
     "ErlaubteKlassen": [
       "Wassermagie",
       "Erdmagie",
@@ -23,18 +31,97 @@
       "Techniker",
       "Krieger"
     ],
-    "Vorteile": [
-      "Guter Anf\u00FChrer",
-      "Glaube als St\u00E4rke",
-      "Disziplinierte Ausbildung"
-    ],
-    "Nachteile": [
-      "Starrk\u00F6pfig",
-      "Arroganz gegen\u00FCber anderen V\u00F6lkern",
-      "Technologieverloren"
-    ]
+    "WählbareBoni": [],
+    "MaxBoniauswahl": 3,
+    "Boni": {
+      "FesteBoni": [
+        {
+          "Name": "Glaubensresonanz",
+          "Beschreibung": "Kann einmal pro Tag einen Fehlschlag bei einem sozialen Wurf wiederholen, wenn er mit Glauben oder Überzeugung zu tun hat."
+        },
+        {
+          "Name": "Zentrale Kultur",
+          "Beschreibung": "Erhält bei Interaktionen mit anderen Völkern +5 auf soziale Würfe, da die meisten mit Novani vertraut sind."
+        },
+        {
+          "Name": "Disziplinierte Ausbildung",
+          "Beschreibung": "Beginnt mit einem zusätzlichen Talent auf „Geübt“ in einem gewählten Bereich."
+        }
+      ],
+      "FreieBoni": [
+        {
+          "Name": "Resilienz durch Glauben",
+          "Beschreibung": "+10 auf Willenskraft gegen Furcht, mentale Beeinflussung oder Versuchung."
+        },
+        {
+          "Name": "Starke Hierarchie",
+          "Beschreibung": "Kann Novani-Angehörige leichter überzeugen oder führen."
+        },
+        {
+          "Name": "Zivile Organisation",
+          "Beschreibung": "10 % Bonus auf wirtschaftliche und organisatorische Aufgaben."
+        },
+        {
+          "Name": "Taktisches Denken",
+          "Beschreibung": "Kleiner Bonus auf strategische Planungen in Kämpfen oder Verhandlungen."
+        },
+        {
+          "Name": "Gesetzeskenner",
+          "Beschreibung": "Bessere Chancen, rechtliche oder diplomatische Konflikte zu lösen."
+        },
+        {
+          "Name": "Zeremonielle Präsenz",
+          "Beschreibung": "Beginnt mit religiösem Gegenstand, der in bestimmten Situationen Boni gibt."
+        },
+        {
+          "Name": "Inspirierender Glaube",
+          "Beschreibung": "Verbündete erhalten +10 auf nächsten Willenskraftwurf nach inspirierender Rede."
+        },
+        {
+          "Name": "Ritualkenntnis",
+          "Beschreibung": "Kann einfache Rituale durchführen, um kleine Boni zu erhalten."
+        },
+        {
+          "Name": "Vergessene Technologie",
+          "Beschreibung": "Kleine Chance, alte Artefakte zu verstehen oder reaktivieren."
+        },
+        {
+          "Name": "Hierarchisches Denken",
+          "Beschreibung": "Formuliert Befehle/Strategien klarer für bessere Gruppenaktionen."
+        },
+        {
+          "Name": "Glaubensprüfung",
+          "Beschreibung": "Einmalige mentale Herausforderung für Bonus auf Verteidigung."
+        },
+        {
+          "Name": "Wächter der Schriften",
+          "Beschreibung": "Kann uraltes Wissen nutzen, um Situationen zu lösen."
+        },
+        {
+          "Name": "Tempelgeweiht",
+          "Beschreibung": "Erhält Vorteile in heiligen Novani-Tempeln."
+        },
+        {
+          "Name": "Strenge Disziplin",
+          "Beschreibung": "+15 auf Konzentration oder mentale Herausforderungen."
+        },
+        {
+          "Name": "Prophetische Vision",
+          "Beschreibung": "Einmal pro Abenteuer vage Hinweise auf Gefahr oder Möglichkeit."
+        },
+        {
+          "Name": "Uralte Meditationspraktiken",
+          "Beschreibung": "Meditation verleiht leichten Buff."
+        },
+        {
+          "Name": "Glaube als Schutzschild",
+          "Beschreibung": "Kann Schutz durch Glaubenskraft aktivieren."
+        }
+      ],
+      "MaxBoniauswahl": 3
+    }
   },
-  "Klasse": "Erdmagie",
+  "Klasse": "Wassermagie",
   "Attribute": {
     "STR": 8,
     "GES": 8,
@@ -45,18 +132,38 @@
     "CHR": 8
   },
   "Vorteile": [
-    "Fuchssinn (3P)",
-    "Nerven aus Stahl (3P)"
+    "Entfernungssinn (1P)",
+    "Gute Reflexe (4P)"
   ],
   "Nachteile": [
-    "\u00C4therabh\u00E4ngig (3P)",
-    "Analphabet (3P)",
-    "Antike Abneigung (2P)"
+    "Ätherüberladung (3P)",
+    "Angst vor (3P)",
+    "Dauerhafte Präsenz (2P)",
+    "Isolationist (2P)"
   ],
   "Motivation": "",
   "Level": 1,
-  "LebenAktuell": 12,
-  "ChiAktuell": 5,
+  "LebenAktuell": 0,
+  "ChiAktuell": 0,
+  "Fähigkeiten": [
+    {
+      "Name": "Eiskette",
+      "Effekt": "Binde ein Ziel, GE-Rettungswurf um Bewegung zu verhindern",
+      "ChiKosten": 2
+    }
+  ],
+  "FesteVorteile": [],
+  "FesteNachteile": [],
+  "VolksBoni": [
+    "Resilienz durch Glauben",
+    "Zivile Organisation",
+    "Glaube als Schutzschild"
+  ],
+  "Fertigkeiten": [
+    "Athletik",
+    "Elementarmagie",
+    "Erste Hilfe"
+  ],
   "Leben": 12,
   "Chi": 5,
   "Ruestungsklasse": 9

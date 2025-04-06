@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "uDc2kErVtk8=",
+  "dgSpecHash": "HKVC3VlWpDs=",
   "success": true,
-  "projectFilePath": "C:\\Users\\niggi\\source\\repos\\NovaGaiaApplication\\NovaGaiaApplication\\NovaGaiaCharaktereditor.csproj",
+  "projectFilePath": "C:\\Users\\niggi\\Source\\Repos\\NovaGaiaCharaktereditor2\\NovaGaiaApplication\\NovaGaiaCharaktereditor.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\niggi\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
   ],

@@ -1,5 +1,5 @@
 ﻿NovaGaiaCharaktereditor
-
+1.0.0.0
 
 winexe
 C#
@@ -12,7 +12,7 @@ TRACE;DEBUG;NET;NET8_0;NETCOREAPP
 C:\Users\niggi\Source\Repos\NovaGaiaCharaktereditor2\NovaGaiaApplication\App.xaml
 6-730680580
 
-17-586760608
+19-2053490858
 199-597082179
 HelpDialog\FertigkeitenAuswahlDialog.xaml;HelpDialog\FähigkeitAuswahlDialog.xaml;HelpDialog\VolksboniAuswahlDialog.xaml;MainWindow.xaml;Themes\DarkTheme.xaml;Themes\LightTheme.xaml;
 

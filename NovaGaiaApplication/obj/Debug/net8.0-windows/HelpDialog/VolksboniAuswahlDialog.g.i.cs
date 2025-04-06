@@ -68,8 +68,7 @@ namespace NovaGaiaCharaktereditor.HelpDialog {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/NovaGaiaCharaktereditor;V1.0.0.0;component/helpdialog/volksboniauswahldialog.xam" +
-                    "l", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/NovaGaiaCharaktereditor;component/helpdialog/volksboniauswahldialog.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\HelpDialog\VolksboniAuswahlDialog.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);

@@ -1,7 +1,6 @@
 ﻿using NovaGaiaCharaktereditor.Data;
 using NovaGaiaCharaktereditor.Klassen;
 using System.IO;
-using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -20,9 +19,10 @@ namespace NovaGaiaCharaktereditor
         private int verfügbareAttributPunkte = 27;
         private readonly List<string> basisAttribute = new() { "STR", "GES", "INT", "WAH", "AUS", "WIL", "CHR" };
         private int maxBonusAuswahl = 0;
-        private List<BoniEintrag> aktiveVolksBoni = new(); 
-        private List<Fähigkeit> aktiveFaehigkeiten = new(); 
+        private List<BoniEintrag> aktiveVolksBoni = new();
+        private List<Fähigkeit> aktiveFaehigkeiten = new();
         private List<Fertigkeit> aktiveFertigkeiten = new();
+        private Dictionary<string, int> neueAttribute = new();
 
         public MainWindow()
         {
@@ -44,27 +44,37 @@ namespace NovaGaiaCharaktereditor
         {
             var dialog = new Microsoft.Win32.SaveFileDialog
             {
-                Filter = "JSON-Datei (*.json)|*.json",
+                Filter = "Charakterdateien (*.json)|*.json",
                 DefaultExt = ".json"
             };
 
             if (dialog.ShowDialog() == true)
             {
-                // Setze aktuelle Werte in den Charakter
                 aktuellerCharakter.Name = txtName.Text;
                 aktuellerCharakter.Motivation = txtMotivation.Text;
-                aktuellerCharakter.Klasse = cmbKlasse.SelectedItem?.ToString() ?? "";
-                aktuellerCharakter.Fähigkeiten = lstAusgewaehlteTechniken.Items
-                    .OfType<Fähigkeit>().ToList();
-                aktuellerCharakter.Vorteile = lstVorteile.Items.OfType<string>().ToList();
-                aktuellerCharakter.Nachteile = lstNachteile.Items.OfType<string>().ToList();
-                aktuellerCharakter.VolksBoni = aktiveVolksBoni.Select(b => b.Name).ToList();
+                aktuellerCharakter.Klasse = cmbKlasse.SelectedItem?.ToString();
+                var volkName = cmbVolk.SelectedItem?.ToString();
+                aktuellerCharakter.Level = int.TryParse(txtLevel.Text, out int level) ? level : 1;
 
-                // JSON speichern
+                if (volkName != null && VolkDatabase.Voelker.TryGetValue(volkName, out var volk))
+                {
+                    aktuellerCharakter.Volk = volk;
+                }
+
+                // Übertragen der Live-Daten
+                aktuellerCharakter.Fähigkeiten = aktiveFaehigkeiten;
+                aktuellerCharakter.VolksBoni = aktiveVolksBoni.Select(b => b.Name).ToList();
+                aktuellerCharakter.Fertigkeiten = aktiveFertigkeiten.Select(f => f.Name).ToList();
+                aktuellerCharakter.Vorteile = lstVorteile.Items.Cast<string>().ToList();
+                aktuellerCharakter.Nachteile = lstNachteile.Items.Cast<string>().ToList();
+
+                // Attribute
+                aktuellerCharakter.Attribute = neueAttribute.ToDictionary(entry => entry.Key, entry => entry.Value);
+
                 var json = JsonConvert.SerializeObject(aktuellerCharakter, Newtonsoft.Json.Formatting.Indented);
                 File.WriteAllText(dialog.FileName, json);
 
-                MessageBox.Show("Charakter erfolgreich gespeichert.");
+                MessageBox.Show("Charakter wurde erfolgreich gespeichert.");
             }
         }
 
@@ -72,50 +82,79 @@ namespace NovaGaiaCharaktereditor
         {
             var dialog = new Microsoft.Win32.OpenFileDialog
             {
-                Filter = "JSON-Datei (*.json)|*.json",
+                Filter = "Charakterdateien (*.json)|*.json",
                 DefaultExt = ".json"
             };
 
             if (dialog.ShowDialog() == true)
             {
-                var json = File.ReadAllText(dialog.FileName);
-                aktuellerCharakter = JsonConvert.DeserializeObject<Charakter>(json);
-
-                if (aktuellerCharakter == null)
+                try
                 {
-                    MessageBox.Show("Fehler beim Laden der Datei.");
-                    return;
-                }
+                    var json = File.ReadAllText(dialog.FileName);
+                    aktuellerCharakter = JsonConvert.DeserializeObject<Charakter>(json) ?? new Charakter();
 
-                // Oberfläche befüllen
-                txtName.Text = aktuellerCharakter.Name;
-                txtMotivation.Text = aktuellerCharakter.Motivation;
-                cmbVolk.SelectedItem = aktuellerCharakter.Volk?.Name;
-                cmbKlasse.SelectedItem = aktuellerCharakter.Klasse;
+                    // Textfelder
+                    txtName.Text = aktuellerCharakter.Name;
+                    txtMotivation.Text = aktuellerCharakter.Motivation;
 
-                UpdateAttributAnzeige();
-                lstAusgewaehlteTechniken.ItemsSource = aktuellerCharakter.Fähigkeiten;
-                lstVorteile.ItemsSource = aktuellerCharakter.Vorteile;
-                lstNachteile.ItemsSource = aktuellerCharakter.Nachteile;
+                    cmbKlasse.SelectedItem = aktuellerCharakter.Klasse;
+                    cmbVolk.SelectedItem = aktuellerCharakter.Volk?.Name;
 
-                // Volksboni neu aufbauen
-                if (aktuellerCharakter.Volk != null)
-                {
-                    if (VolkDatabase.Voelker.TryGetValue(aktuellerCharakter.Volk.Name, out var geladenesVolk))
+                    if (aktuellerCharakter.Volk != null)
                     {
-                        aktuellerCharakter.Volk = geladenesVolk;
-                        maxBonusAuswahl = geladenesVolk.Boni?.MaxBoniauswahl ?? 3;
+                        LadeVolksBoni(aktuellerCharakter.Volk);
 
-                        LadeVolksBoni(geladenesVolk); // setzt Feste/Freie Boni
-                        aktiveVolksBoni = geladenesVolk.Boni.FreieBoni
+                        aktiveVolksBoni = aktuellerCharakter.Volk.Boni.FreieBoni
                             .Where(b => aktuellerCharakter.VolksBoni.Contains(b.Name))
                             .ToList();
 
                         RenderVolksboni();
                     }
-                }
 
-                MessageBox.Show("Charakter erfolgreich geladen.");
+                    // ComboBoxen vorbereiten
+                    cmbKlasse.ItemsSource = KlassenFaehigkeiten.VerfuegbareFaehigkeiten.Keys.ToList();
+                    cmbVolk.ItemsSource = VolkDatabase.Voelker.Keys.ToList();
+
+                    // Daten setzen
+                    cmbKlasse.SelectedItem = aktuellerCharakter.Klasse;
+                    cmbVolk.SelectedItem = aktuellerCharakter.Volk?.Name;
+                    txtLevel.Text = aktuellerCharakter.Level.ToString();
+                    txtLevel.Text = aktuellerCharakter.Level.ToString();
+
+                    // Attribute
+                    neueAttribute = new Dictionary<string, int>(aktuellerCharakter.Attribute);
+                    UpdateAttributAnzeige();
+
+                    // Fähigkeiten
+                    aktiveFaehigkeiten = aktuellerCharakter.Fähigkeiten ?? new();
+                    RenderFaehigkeiten();
+
+                    // Fertigkeiten
+                    aktiveFertigkeiten = FertigkeitenDatenbank.Alle
+                        .Where(f => aktuellerCharakter.Fertigkeiten.Contains(f.Name))
+                        .ToList();
+                    RenderFertigkeiten();
+
+                    // Volksboni
+                    if (VolkDatabase.Voelker.TryGetValue(aktuellerCharakter.Volk.Name, out var geladenesVolk))
+                    {
+                        LadeVolksBoni(geladenesVolk);
+                        aktiveVolksBoni = geladenesVolk.Boni.FreieBoni
+                            .Where(b => aktuellerCharakter.VolksBoni.Contains(b.Name))
+                            .ToList();
+                        RenderVolksboni();
+                    }
+
+                    // Vorteile & Nachteile
+                    lstVorteile.ItemsSource = aktuellerCharakter.Vorteile;
+                    lstNachteile.ItemsSource = aktuellerCharakter.Nachteile;
+
+                    MessageBox.Show("Charakter erfolgreich geladen.");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Fehler beim Laden: {ex.Message}");
+                }
             }
         }
 
@@ -603,9 +642,9 @@ namespace NovaGaiaCharaktereditor
         }
     }
 
-    
 
-   
 
-   
+
+
+
 }

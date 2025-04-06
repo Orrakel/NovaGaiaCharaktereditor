@@ -60,8 +60,7 @@ namespace NovaGaiaCharaktereditor.HelpDialog {
                 return;
             }
             _contentLoaded = true;
-            System.Uri resourceLocater = new System.Uri("/NovaGaiaCharaktereditor;V1.0.0.0;component/helpdialog/f%c3%a4higkeitauswahldialo" +
-                    "g.xaml", System.UriKind.Relative);
+            System.Uri resourceLocater = new System.Uri("/NovaGaiaCharaktereditor;component/helpdialog/f%c3%a4higkeitauswahldialog.xaml", System.UriKind.Relative);
             
             #line 1 "..\..\..\..\HelpDialog\FähigkeitAuswahlDialog.xaml"
             System.Windows.Application.LoadComponent(this, resourceLocater);
