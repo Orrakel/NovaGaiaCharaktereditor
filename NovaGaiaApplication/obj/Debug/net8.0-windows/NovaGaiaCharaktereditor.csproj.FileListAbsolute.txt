@@ -22,3 +22,6 @@ C:\Users\niggi\source\repos\NovaGaiaApplication\NovaGaiaApplication\obj\Debug\ne
 C:\Users\niggi\source\repos\NovaGaiaApplication\NovaGaiaApplication\obj\Debug\net8.0-windows\Themes\DarkTheme.baml
 C:\Users\niggi\source\repos\NovaGaiaApplication\NovaGaiaApplication\obj\Debug\net8.0-windows\Themes\LightTheme.baml
 C:\Users\niggi\source\repos\NovaGaiaApplication\NovaGaiaApplication\obj\Debug\net8.0-windows\App.baml
+C:\Users\niggi\source\repos\NovaGaiaApplication\NovaGaiaApplication\obj\Debug\net8.0-windows\NovaGaiaCharaktereditor.sourcelink.json
+C:\Users\niggi\source\repos\NovaGaiaApplication\NovaGaiaApplication\obj\Debug\net8.0-windows\HelpDialog\VolksboniAuswahlDialog.baml
+C:\Users\niggi\source\repos\NovaGaiaApplication\NovaGaiaApplication\obj\Debug\net8.0-windows\HelpDialog\VolksboniAuswahlDialog.g.cs

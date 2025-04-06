@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP
 C:\Users\niggi\source\repos\NovaGaiaApplication\NovaGaiaApplication\App.xaml
-4-617957169
+5573474896
 
-9-191282182
+14-761116825
 198-1431420039
-HelpDialog\FähigkeitAuswahlDialog.xaml;MainWindow.xaml;Themes\DarkTheme.xaml;Themes\LightTheme.xaml;
+HelpDialog\FähigkeitAuswahlDialog.xaml;HelpDialog\VolksboniAuswahlDialog.xaml;MainWindow.xaml;Themes\DarkTheme.xaml;Themes\LightTheme.xaml;
 
 False
 

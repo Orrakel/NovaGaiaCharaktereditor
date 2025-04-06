@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("NovaGaiaCharaktereditor")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d507fbb89ed86d6a9ea30a9019bfafab58f806ea")]
 [assembly: System.Reflection.AssemblyProductAttribute("NovaGaiaCharaktereditor")]
 [assembly: System.Reflection.AssemblyTitleAttribute("NovaGaiaCharaktereditor")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

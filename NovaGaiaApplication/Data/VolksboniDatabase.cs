@@ -1,12 +1,14 @@
+using NovaGaiaCharaktereditor.Klassen;
+
 namespace NovaGaiaCharaktereditor.Data
 {
     public static class VolksboniDatabase
     {
-        public static Dictionary<string, VolksboniSet> BoniProVolk { get; } = new()
+        public static Dictionary<string, VolksBoni> BoniProVolk { get; } = new()
         {
             {
                 "Novani",
-                new VolksboniSet
+                new VolksBoni
                 {
                     MaxBoniauswahl = 3,
                     FesteBoni = new List<BoniEintrag>
@@ -39,7 +41,7 @@ namespace NovaGaiaCharaktereditor.Data
             },
             {
                 "Psioniker",
-                new VolksboniSet
+                new VolksBoni
                 {
                     MaxBoniauswahl = 3,
                     FesteBoni = new List<BoniEintrag>
@@ -76,7 +78,7 @@ namespace NovaGaiaCharaktereditor.Data
             },
             {
                 "Bestarii",
-                new VolksboniSet
+                new VolksBoni
                 {
                     MaxBoniauswahl = 3,
                     FesteBoni = new List<BoniEintrag>
@@ -115,7 +117,7 @@ namespace NovaGaiaCharaktereditor.Data
             },
             {
                 "Mareth",
-                new VolksboniSet
+                new VolksBoni
                 {
                     MaxBoniauswahl = 3,
                     FesteBoni = new List<BoniEintrag>
@@ -148,7 +150,7 @@ namespace NovaGaiaCharaktereditor.Data
             },
             {
                 "Auralithen",
-                new VolksboniSet
+                new VolksBoni
                 {
                     MaxBoniauswahl = 3,
                     FesteBoni = new List<BoniEintrag>
@@ -189,7 +191,7 @@ namespace NovaGaiaCharaktereditor.Data
             },
             {
                 "Aetheris",
-                new VolksboniSet
+                new VolksBoni
                 {
                     MaxBoniauswahl = 3,
                     FesteBoni = new List<BoniEintrag>
@@ -227,7 +229,7 @@ namespace NovaGaiaCharaktereditor.Data
             },
             {
                 "Sylvari",
-                new VolksboniSet
+                new VolksBoni
                 {
                     MaxBoniauswahl = 3,
                     FesteBoni = new List<BoniEintrag>
@@ -267,7 +269,7 @@ namespace NovaGaiaCharaktereditor.Data
             },
             {
                 "Steinvolk",
-                new VolksboniSet
+                new VolksBoni
                 {
                     MaxBoniauswahl = 3,
                     FesteBoni = new List<BoniEintrag>
@@ -308,13 +310,6 @@ namespace NovaGaiaCharaktereditor.Data
                 }
             },
         };
-    }
-
-    public class VolksboniSet
-    {
-        public List<BoniEintrag> FesteBoni { get; set; } = new();
-        public List<BoniEintrag> FreieBoni { get; set; } = new();
-        public int MaxBoniauswahl { get; set; }
     }
 
     public class BoniEintrag

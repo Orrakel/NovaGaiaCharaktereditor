@@ -9,7 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Klassen\" />
     <Folder Include="Themes\" />
   </ItemGroup>
 

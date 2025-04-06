@@ -1,5 +1,5 @@
-﻿using NovaGaiaCharaktereditor;
-using static NovaGaiaCharaktereditor.MainWindow;
+﻿using NovaGaiaCharaktereditor.Data;
+using NovaGaiaCharaktereditor.Klassen;
 namespace NovaGaiaCharaktereditor
 {
     public static class VolkDatabase
@@ -22,7 +22,8 @@ namespace NovaGaiaCharaktereditor
                 },
                 ErlaubteKlassen = new List<string> { "Wassermagie", "Erdmagie", "Feuermagie", "Luftmagie", "Techniker", "Krieger" },
                 Vorteile = new List<string> { "Guter Anführer", "Glaube als Stärke", "Disziplinierte Ausbildung" },
-                Nachteile = new List<string> { "Starrköpfig", "Arroganz gegenüber anderen Völkern", "Technologieverloren" }
+                Nachteile = new List<string> { "Starrköpfig", "Arroganz gegenüber anderen Völkern", "Technologieverloren" },
+                Boni = VolksboniDatabase.BoniProVolk["Novani"]
             },
             ["Psioniker"] = new Volk
             {
@@ -40,7 +41,8 @@ namespace NovaGaiaCharaktereditor
                 },
                 ErlaubteKlassen = new List<string> { "Wassermagie", "Erdmagie", "Feuermagie", "Luftmagie", "Techniker" },
                 Vorteile = new List<string> { "Mentale Meisterschaft", "Telepathische Wahrnehmung", "Schweben" },
-                Nachteile = new List<string> { "Körperlich schwach", "Ätherempfindlich", "Ausgeschlossen" }
+                Nachteile = new List<string> { "Körperlich schwach", "Ätherempfindlich", "Ausgeschlossen" },
+                Boni = VolksboniDatabase.BoniProVolk["Psioniker"]
             },
             ["Bestarii"] = new Volk
             {
@@ -58,7 +60,8 @@ namespace NovaGaiaCharaktereditor
                 },
                 ErlaubteKlassen = new List<string> { "Wassermagie", "Erdmagie", "Feuermagie", "Luftmagie", "Krieger" },
                 Vorteile = new List<string> { "Tierische Instinkte", "Seelenverbindung", "Natürliche Reflexe" },
-                Nachteile = new List<string> { "Technikmisstrauen", "Eingeschränkte Freiheit", "Ehrenkodex" }
+                Nachteile = new List<string> { "Technikmisstrauen", "Eingeschränkte Freiheit", "Ehrenkodex" },
+                Boni = VolksboniDatabase.BoniProVolk["Bestarii"]
             },
             ["Auralithen"] = new Volk
             {
@@ -76,7 +79,8 @@ namespace NovaGaiaCharaktereditor
                 },
                 ErlaubteKlassen = new List<string> { "Wassermagie", "Erdmagie", "Feuermagie", "Techniker", "Krieger" },
                 Vorteile = new List<string> { "Kälteresistenz", "Robuste Natur", "Meister der Eiszauber" },
-                Nachteile = new List<string> { "Langsame Reflexe", "Misstrauen", "Hitzeschwäche" }
+                Nachteile = new List<string> { "Langsame Reflexe", "Misstrauen", "Hitzeschwäche" },
+                Boni = VolksboniDatabase.BoniProVolk["Auralithen"]
             },
             ["Mareth"] = new Volk
             {
@@ -94,7 +98,8 @@ namespace NovaGaiaCharaktereditor
                 },
                 ErlaubteKlassen = new List<string> { "Wassermagie", "Erdmagie", "Luftmagie", "Techniker", "Krieger" },
                 Vorteile = new List<string> { "Unterwasseratmung", "+20% Bewegung im Wasser", "Druckresistenz" },
-                Nachteile = new List<string> { "–10% Bewegung an Land", "Braucht regelmäßige Feuchtigkeit", "Traditionelles Denken" }
+                Nachteile = new List<string> { "–10% Bewegung an Land", "Braucht regelmäßige Feuchtigkeit", "Traditionelles Denken" },
+                Boni = VolksboniDatabase.BoniProVolk["Mareth"]
             },
             ["Steinvolk"] = new Volk
             {
@@ -112,7 +117,8 @@ namespace NovaGaiaCharaktereditor
                 },
                 ErlaubteKlassen = new List<string> { "Wassermagie", "Erdmagie", "Feuermagie", "Techniker", "Krieger" },
                 Vorteile = new List<string> { "Magiespeicher", "Harte Haut", "Unterirdische Orientierung" },
-                Nachteile = new List<string> { "–10% Geschwindigkeit", "+10% Blitzschaden", "–10 auf soziale Proben" }
+                Nachteile = new List<string> { "–10% Geschwindigkeit", "+10% Blitzschaden", "–10 auf soziale Proben" },
+                Boni = VolksboniDatabase.BoniProVolk["Steinvolk"]
             },
             ["Sylvari"] = new Volk
             {
@@ -130,7 +136,8 @@ namespace NovaGaiaCharaktereditor
                 },
                 ErlaubteKlassen = new List<string> { "Wassermagie", "Erdmagie", "Luftmagie", "Techniker", "Krieger" },
                 Vorteile = new List<string> { "Pflanzenkommunikation", "Natürliche Heilung", "+ auf Überleben im Wald" },
-                Nachteile = new List<string> { "+10% Feuerschaden", "Weniger Heilung durch Fleisch", "–10% Bewegung auf gepflasterten Wegen" }
+                Nachteile = new List<string> { "+10% Feuerschaden", "Weniger Heilung durch Fleisch", "–10% Bewegung auf gepflasterten Wegen" },
+                Boni = VolksboniDatabase.BoniProVolk["Sylvari"]
             },
             ["Aetheris"] = new Volk
             {
@@ -148,7 +155,8 @@ namespace NovaGaiaCharaktereditor
                 },
                 ErlaubteKlassen = new List<string> { "Wassermagie", "Feuermagie", "Luftmagie", "Techniker", "Krieger" },
                 Vorteile = new List<string> { "Gleitflug", "Erweiterte Sicht", "Bonus gegen Fallschaden" },
-                Nachteile = new List<string> { "Empfindlich gegen starken Wind", "–3 Rüstung", "–5 auf Stärkeproben" }
+                Nachteile = new List<string> { "Empfindlich gegen starken Wind", "–3 Rüstung", "–5 auf Stärkeproben" },
+                Boni = VolksboniDatabase.BoniProVolk["Aetheris"]
             }
         };
     }

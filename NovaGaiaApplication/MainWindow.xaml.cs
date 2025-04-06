@@ -1,9 +1,12 @@
 ﻿using NovaGaiaCharaktereditor.Data;
+using NovaGaiaCharaktereditor.Klassen;
 using System.IO;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using NovaGaiaCharaktereditor.Dialoge;
+
 
 namespace NovaGaiaCharaktereditor
 {
@@ -91,42 +94,77 @@ namespace NovaGaiaCharaktereditor
                 VolkDatabase.Voelker.TryGetValue(selectedVolk, out var volk))
             {
                 aktuellerCharakter.Volk = volk;
-
-                // Attribute setzen
                 aktuellerCharakter.Attribute = new Dictionary<string, int>(volk.Startattribute);
+                verfügbareAttributPunkte = 27;
+                UpdateAttributAnzeige();
 
-                // Reset der festen Vorteile/Nachteile
-                aktuellerCharakter.FesteVorteile = new List<string>(volk.Vorteile);
-                aktuellerCharakter.FesteNachteile = new List<string>(volk.Nachteile);
-
-                // Doppelte entfernen (falls Benutzer z. B. vorher selbst dieselben hinzugefügt hat)
-                aktuellerCharakter.Vorteile.RemoveAll(v => aktuellerCharakter.FesteVorteile.Contains(v));
-                aktuellerCharakter.Nachteile.RemoveAll(n => aktuellerCharakter.FesteNachteile.Contains(n));
-
-                // Beschreibung aktualisieren
+                // Aktualisiere UI
                 txtVolkBeschreibung.Text = volk.Beschreibung;
-
-                // Klassen neu setzen
                 cmbKlasse.ItemsSource = volk.ErlaubteKlassen;
                 cmbKlasse.SelectedIndex = -1;
 
-                // Fähigkeiten-Ansicht zurücksetzen
-                faehigkeitenPanel.Children.Clear();
-                aktuellerCharakter.Fähigkeiten.Clear();
-
-                // Inventar mit Standardausrüstung des Volkes
-                txtInventar.Text = string.Join(Environment.NewLine, volk.Standardausrüstung ?? new List<string>());
-
-                // Attributpunkte zurücksetzen
-                UpdateAttributAnzeige();
-
-                // Merkmalslisten aktualisieren
-                UpdateMerkmalsListen();
-
-                // Update Volksboni
+                // Lade Volksboni
                 LadeVolksBoni(volk);
+
+                //// Leere Fähigkeiten-Listen
+                //lstAlleFähigkeiten.ItemsSource = KlassenFaehigkeiten.VerfuegbareFaehigkeiten.GetValueOrDefault(volk.Name, new());
+                //lstAusgewaehlteFaehigkeiten.ItemsSource = null;
+            }
+
+            lstVorteile.ItemsSource = new List<string>(aktuellerCharakter.Vorteile);
+            lstNachteile.ItemsSource = new List<string>(aktuellerCharakter.Nachteile);
+        }
+        private void BtnAddVolksBoni_Click(object sender, RoutedEventArgs e)
+        {
+            if (aktuellerCharakter.Volk?.Boni == null) return;
+
+            var max = aktuellerCharakter.Volk.Boni.MaxBoniauswahl;
+            var aktuelle = aktiveVolksBoni.Select(b => b.Name).ToHashSet();
+            var verfügbare = aktuellerCharakter.Volk.Boni.FreieBoni
+                .Where(b => !aktuelle.Contains(b.Name))
+                .ToList();
+
+            if (aktiveVolksBoni.Count >= max)
+            {
+                MessageBox.Show($"Du hast bereits {max} freie Boni gewählt.");
+                return;
+            }
+
+            var dialog = new VolksboniAuswahlDialog(verfügbare, max - aktiveVolksBoni.Count);
+            if (dialog.ShowDialog() == true && dialog.AusgewählteBoni.Any())
+            {
+                aktiveVolksBoni.AddRange(dialog.AusgewählteBoni);
+                aktuellerCharakter.VolksBoni = aktiveVolksBoni.Select(b => b.Name).ToList();
+                RenderVolksboni();
             }
         }
+        private void RenderVolksboni()
+        {
+            lstAusgewaehlteVolksBoni.ItemsSource = null;
+            lstAusgewaehlteVolksBoni.ItemsSource = aktiveVolksBoni;
+            txtVolksBoniHinweis.Text = $"Ausgewählt: {aktiveVolksBoni.Count} / {maxBonusAuswahl}";
+        }
+
+        private void LadeVolksBoni(Volk volk)
+        {
+            if (volk?.Boni != null)
+            {
+                lstFesteVolksBoni.ItemsSource = volk.Boni.FesteBoni;
+                lstAusgewaehlteVolksBoni.ItemsSource = aktiveVolksBoni;
+
+                aktiveVolksBoni.Clear();
+                maxBonusAuswahl = volk.Boni.MaxBoniauswahl;
+
+                txtVolksBoniHinweis.Text = $"Wähle bis zu {maxBonusAuswahl} freie Bonus{(maxBonusAuswahl > 1 ? "e" : "")}.";
+            }
+            else
+            {
+                lstFesteVolksBoni.ItemsSource = null;
+                lstAusgewaehlteVolksBoni.ItemsSource = null;
+                txtVolksBoniHinweis.Text = "Keine Volksboni verfügbar.";
+            }
+        }
+
 
         private void UpdateVolksbonusHinweis()
         {
@@ -286,7 +324,7 @@ namespace NovaGaiaCharaktereditor
             }
 
             // Dialog zur Auswahl der zu entfernenden Fähigkeit
-            var dialog = new FähigkeitAuswahlDialog(aktuellerCharakter.Fähigkeiten);
+            FähigkeitAuswahlDialog dialog = new FähigkeitAuswahlDialog(aktuellerCharakter.Fähigkeiten);
             dialog.Title = "Fähigkeit entfernen";
 
             if (dialog.ShowDialog() == true && dialog.SelectedFähigkeit != null)
@@ -456,71 +494,35 @@ namespace NovaGaiaCharaktereditor
 
             UpdateBonusCheckBoxes();
         }
+
         private void UpdateBonusCheckBoxes()
         {
-            if (lstFreieVolksBoni == null)
+            if (txtVolksBoniHinweis == null)
+            {
                 return;
-
-            foreach (var item in lstFreieVolksBoni.Items)
-            {
-                var container = lstFreieVolksBoni.ItemContainerGenerator.ContainerFromItem(item) as ContentPresenter;
-                if (container == null) continue;
-
-                var checkbox = FindVisualChild<CheckBox>(container);
-
-                if (checkbox != null)
-                {
-                    checkbox.IsEnabled = chkSpielmodus.IsChecked != true &&
-                                         (checkbox.IsChecked == true || aktiveVolksBoni.Count < maxBonusAuswahl);
-                }
             }
-        }
-        private void LadeVolksBoni(Volk volk)
-        {
-            if (volk?.Boni != null)
-            {
-                lstFesteVolksBoni.ItemsSource = volk.Boni.FesteBoni;
-                lstFreieVolksBoni.ItemsSource = volk.Boni.FreieBoni;
 
-                // Bonus-Auswahl Info aktualisieren
-                txtVolksBoniHinweis.Text = $"Wähle bis zu {maxBonusAuswahl} Bonus{(maxBonusAuswahl > 1 ? "e" : "")}.";
-            }
-            else
+            if (aktiveVolksBoni == null)
             {
-                // Hinweis, wenn keine Volksboni vorhanden sind
-                txtVolksBoniHinweis.Text = "Keine Volksboni verfügbar.";
+                return;
             }
+
+            txtVolksBoniHinweis.Text = $"Ausgewählt: {aktiveVolksBoni.Count} / {maxBonusAuswahl}";
         }
 
-        // Event-Handler für das Hinzufügen von Volksboni
-        private void BtnAddVolksBoni_Click(object sender, RoutedEventArgs e)
-        {
-            if (lstFreieVolksBoni.SelectedItems.Count > 0)
-            {
-                foreach (var item in lstFreieVolksBoni.SelectedItems)
-                {
-                    lstFesteVolksBoni.Items.Add(item);  // Volksboni zu den festen Boni hinzufügen
-                }
-            }
-            else
-            {
-                MessageBox.Show("Bitte wähle mindestens einen Bonus aus.");
-            }
-        }
-
-        // Event-Handler für das Entfernen von Volksboni
         private void BtnRemoveVolksBoni_Click(object sender, RoutedEventArgs e)
         {
-            if (lstFesteVolksBoni.SelectedItem != null)
+            if (lstAusgewaehlteVolksBoni.SelectedItem is BoniEintrag ausgewaehlterBonus)
             {
-                lstFesteVolksBoni.Items.Remove(lstFesteVolksBoni.SelectedItem);  // Entferne den gewählten Bonus
+                aktiveVolksBoni.Remove(ausgewaehlterBonus);
+                aktuellerCharakter.VolksBoni = aktiveVolksBoni.Select(b => b.Name).ToList();
+                RenderVolksboni();
             }
             else
             {
-                MessageBox.Show("Bitte wähle einen Bonus zum Entfernen aus.");
+                MessageBox.Show("Bitte wähle einen Bonus aus der Liste aus, den du entfernen möchtest.");
             }
         }
-
 
         private static T FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
         {
@@ -572,95 +574,9 @@ namespace NovaGaiaCharaktereditor
         }
     }
 
-    public class Charakter
-    {
-        public string Name { get; set; } = string.Empty;
-        public Volk Volk { get; set; }
-        public string Klasse { get; set; } = string.Empty;
-        public Dictionary<string, int> Attribute { get; set; } = new();
-        public List<string> Vorteile { get; set; } = new();
-        public List<string> Nachteile { get; set; } = new();
-        public string Motivation { get; set; } = string.Empty;
-        public int Level { get; set; } = 1;
-        public int LebenAktuell { get; set; }
-        public int ChiAktuell { get; set; }
-        public List<Fähigkeit> Fähigkeiten { get; set; } = new();
-        public List<string> FesteVorteile { get; set; } = new();
-        public List<string> FesteNachteile { get; set; } = new();
-        public List<string> VolksBoni { get; set; } = new();
+    
 
+   
 
-        public int Leben
-        {
-            get
-            {
-                int konsti = Attribute.ContainsKey("AUS") ? Attribute["AUS"] : 0;
-                int mod = GetModifikator("AUS");
-                int basis = 0;
-
-                if (Klasse.Contains("Magie")) basis = 8;
-                else if (Klasse == "Krieger") basis = 10;
-                else if (Klasse == "Techniker") basis = 6;
-                else basis = 5;
-
-                return basis + konsti + mod + (Level - 1) * mod;
-            }
-        }
-
-        public int Chi => 5 + GetModifikator("WIL") + Level;
-
-        public int Ruestungsklasse
-        {
-            get
-            {
-                int basis = 10;
-                int geschick = GetModifikator("GES");
-                int bonus = 0;
-                if (Vorteile.Exists(v => v.Contains("Robust"))) bonus += 3;
-                return basis + geschick + bonus;
-            }
-        }
-
-        public int GetModifikator(string attribut)
-        {
-            if (Attribute != null && Attribute.TryGetValue(attribut, out int wert))
-            {
-                return (wert - 10) / 2;
-            }
-            return 0;
-        }
-    }
-
-    public class Volk
-    {
-        public string Name { get; set; }
-        public string Beschreibung { get; set; }
-        public Dictionary<string, int> Startattribute { get; set; }
-        public List<string> Vorteile { get; set; } = new();
-        public List<string> Nachteile { get; set; } = new();
-        public List<string> Standardausrüstung { get; set; } = new();
-        public List<string> ErlaubteKlassen { get; set; } = new();
-        public List<string> WählbareBoni { get; set; } = new();
-        public int MaxBoniauswahl { get; set; } = 3;
-        public VolksBoni Boni { get; set; }
-
-    }
-    public class VolksBoni
-    {
-        public List<BoniEintrag> FesteBoni { get; set; } = new();
-        public List<BoniEintrag> FreieBoni { get; set; } = new();
-        public int MaxBoniauswahl { get; set; }
-    }
-
-    public class Fähigkeit
-    {
-        public string Name { get; set; }
-        public string Effekt { get; set; }
-        public int ChiKosten { get; set; }
-
-        public override string ToString()
-        {
-            return $"{Name} (Chi: {ChiKosten})";
-        }
-    }
+   
 }

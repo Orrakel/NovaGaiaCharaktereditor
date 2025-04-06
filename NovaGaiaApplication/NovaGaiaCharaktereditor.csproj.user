@@ -10,9 +10,15 @@
     <Compile Update="HelpDialog\FähigkeitAuswahlDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="HelpDialog\VolksboniAuswahlDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="HelpDialog\FähigkeitAuswahlDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="HelpDialog\VolksboniAuswahlDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="MainWindow.xaml">
