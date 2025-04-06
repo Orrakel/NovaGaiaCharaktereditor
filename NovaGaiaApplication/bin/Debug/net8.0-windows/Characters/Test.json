@@ -1,0 +1,63 @@
+{
+  "F\u00E4higkeiten": [
+    "(Felsbr\u00FCcke, Erschaffe eine schmale Erderh\u00F6hung \u00FCber eine L\u00FCcke bis zu 6m., 2)"
+  ],
+  "Name": "Test",
+  "Volk": {
+    "Name": "Novani",
+    "Beschreibung": "Streng gl\u00E4ubig, diszipliniert, Ursprung der Zivilisation.",
+    "Startattribute": {
+      "STR": 8,
+      "GES": 8,
+      "INT": 8,
+      "WAH": 8,
+      "AUS": 8,
+      "WIL": 8,
+      "CHR": 8
+    },
+    "ErlaubteKlassen": [
+      "Wassermagie",
+      "Erdmagie",
+      "Feuermagie",
+      "Luftmagie",
+      "Techniker",
+      "Krieger"
+    ],
+    "Vorteile": [
+      "Guter Anf\u00FChrer",
+      "Glaube als St\u00E4rke",
+      "Disziplinierte Ausbildung"
+    ],
+    "Nachteile": [
+      "Starrk\u00F6pfig",
+      "Arroganz gegen\u00FCber anderen V\u00F6lkern",
+      "Technologieverloren"
+    ]
+  },
+  "Klasse": "Erdmagie",
+  "Attribute": {
+    "STR": 8,
+    "GES": 8,
+    "INT": 8,
+    "WAH": 8,
+    "AUS": 8,
+    "WIL": 8,
+    "CHR": 8
+  },
+  "Vorteile": [
+    "Fuchssinn (3P)",
+    "Nerven aus Stahl (3P)"
+  ],
+  "Nachteile": [
+    "\u00C4therabh\u00E4ngig (3P)",
+    "Analphabet (3P)",
+    "Antike Abneigung (2P)"
+  ],
+  "Motivation": "",
+  "Level": 1,
+  "LebenAktuell": 12,
+  "ChiAktuell": 5,
+  "Leben": 12,
+  "Chi": 5,
+  "Ruestungsklasse": 9
+}

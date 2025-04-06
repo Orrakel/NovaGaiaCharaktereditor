@@ -1,0 +1,43 @@
+{
+  "Name": "asdasd",
+  "Volk": {
+    "Name": "Novani",
+    "Beschreibung": "Streng gl\u00E4ubig, diszipliniert, Ursprung der Zivilisation.",
+    "Startattribute": {
+      "STR": 8,
+      "GES": 8,
+      "INT": 8,
+      "WAH": 8,
+      "AUS": 8,
+      "WIL": 8,
+      "CHR": 8
+    },
+    "ErlaubteKlassen": [
+      "Wassermagie",
+      "Erdmagie",
+      "Feuermagie",
+      "Luftmagie",
+      "Techniker",
+      "Krieger"
+    ],
+    "Vorteile": [
+      "Guter Anf\u00FChrer",
+      "Glaube als St\u00E4rke",
+      "Disziplinierte Ausbildung"
+    ],
+    "Nachteile": [
+      "Starrk\u00F6pfig",
+      "Arroganz gegen\u00FCber anderen V\u00F6lkern",
+      "Technologieverloren"
+    ]
+  },
+  "Klasse": "",
+  "Attribute": {},
+  "Vorteile": [
+    "Entfernungssinn (1P)"
+  ],
+  "Nachteile": [
+    "\u00C4ther\u00FCberladung (3P)"
+  ],
+  "Motivation": ""
+}
